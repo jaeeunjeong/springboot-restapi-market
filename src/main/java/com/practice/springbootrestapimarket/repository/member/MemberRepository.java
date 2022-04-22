@@ -1,4 +1,4 @@
-package com.practice.springbootrestapimarket.repository;
+package com.practice.springbootrestapimarket.repository.member;
 
 import com.practice.springbootrestapimarket.entity.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;

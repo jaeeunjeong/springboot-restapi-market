@@ -54,4 +54,20 @@ public class MemberRepositoryTest {
         Member result = memberRepository.findById(member.getId()).orElseThrow(MemberNotFoundException::new);
         Assertions.assertThat(result.getId()).isEqualTo(member.getId());
     }
+
+    @Test
+    void EntityDate_확인() {
+        //given : 멤버 객체 생성
+        Member member = createMember();
+
+        //when : 회원 가입 하기
+        memberRepository.save(member);
+        clear();
+
+        //cretedAt과 modifiedAt이 null 아닌지 확인 및 생성시점과 수정 시점이 동일한지 확인.
+        Member foundMember = memberRepository.findById(member.getId()).orElseThrow(MemberNotFoundException::new);
+        Assertions.assertThat(foundMember.getCreatedAt()).isNotNull();
+        Assertions.assertThat(foundMember.getModifiedAt()).isNotNull();
+        Assertions.assertThat(foundMember.getCreatedAt()).isEqualTo(foundMember.getModifiedAt());
+    }
 }

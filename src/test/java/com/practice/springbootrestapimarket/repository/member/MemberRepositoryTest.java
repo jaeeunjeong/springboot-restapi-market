@@ -70,4 +70,37 @@ public class MemberRepositoryTest {
         Assertions.assertThat(foundMember.getModifiedAt()).isNotNull();
         Assertions.assertThat(foundMember.getCreatedAt()).isEqualTo(foundMember.getModifiedAt());
     }
+
+    @Test
+    void update_확인하기() {
+        //given
+        Member member = memberRepository.save(createMember());
+        String newNickname = "BRANDNEW name";
+        clear();
+
+        //when
+        Member foundMember = memberRepository.findById(member.getId()).orElseThrow(MemberNotFoundException::new);
+        foundMember.updateNickname(newNickname);
+        clear();
+
+        //then
+        Member resultMember = memberRepository.findById(member.getId()).orElseThrow(MemberNotFoundException::new);
+        Assertions.assertThat((resultMember.getNickname())).isEqualTo(newNickname);
+    }
+
+    @Test
+    void delete_확인하기() {
+        //given
+        Member member = memberRepository.save(createMember());
+        clear();
+
+        //when
+        memberRepository.delete(member);
+        clear();
+
+        //then : 테스트를 수행하고 예외가 발생했을 때, 적절한 예외가 발생했는지 확인하는 과정
+        Assertions.assertThatThrownBy(() -> memberRepository.findById(member.getId()).orElseThrow(MemberNotFoundException::new))
+                .isInstanceOf(MemberNotFoundException.class);
+
+    }
 }

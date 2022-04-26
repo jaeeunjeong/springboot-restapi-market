@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -102,5 +103,78 @@ public class MemberRepositoryTest {
         Assertions.assertThatThrownBy(() -> memberRepository.findById(member.getId()).orElseThrow(MemberNotFoundException::new))
                 .isInstanceOf(MemberNotFoundException.class);
 
+    }
+
+    @Test
+    void 이메일로_회원찾기() {
+        //given
+        Member member = memberRepository.save(createMember());
+        clear();
+
+        //when
+        Member result = memberRepository.findByEmail(member.getEmail()).orElseThrow(MemberNotFoundException::new);
+
+        //then
+        Assertions.assertThat(member.getId()).isEqualTo(result.getId());
+        Assertions.assertThat(member.getEmail()).isEqualTo(result.getEmail());
+    }
+
+    @Test
+    void 닉네임으로_회원찾기() {
+        //given
+        Member member = memberRepository.save(createMember());
+        clear();
+
+        //when
+        Member result = memberRepository.findByNickname(member.getNickname()).orElseThrow(MemberNotFoundException::new);
+
+        //then
+        Assertions.assertThat(result.getId()).isEqualTo(member.getId());
+        Assertions.assertThat(result.getNickname()).isEqualTo(member.getNickname());
+    }
+
+    @Test
+    void 이메일_중복확인() {
+        // given
+        String email = "email";
+        Member member = memberRepository.save(createMember(email, "password1", "username1", "nickname"));
+        clear();
+
+        // when, then
+        Assertions.assertThatThrownBy(() -> memberRepository.save(createMember(email, "password2", "username2", "nickname2")))
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void 닉네임_중복확인() {
+        // given
+        Member member = memberRepository.save(createMember("email1", "password1", "username1", "nickname"));
+        clear();
+
+        // when, then
+        Assertions.assertThatThrownBy(()-> memberRepository.save(createMember("email2", "password1", "username2", member.getNickname())))
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void 이미_존재하는_이메일인지_확인하기 (){
+        // given
+        Member member = memberRepository.save(createMember());
+        clear();
+
+        // when, then
+        Assertions.assertThat(memberRepository.existsByEmail(member.getEmail())).isTrue();
+        Assertions.assertThat(memberRepository.existsByEmail(member.getEmail()+"_new")).isFalse();
+    }
+
+    @Test
+    void 이미_존재하는_닉네임인지_확인하기(){
+        // given
+        Member member = memberRepository.save(createMember());
+        clear();
+
+        // when, then
+        Assertions.assertThat(memberRepository.existsByNickname(member.getNickname())).isTrue();
+        Assertions.assertThat(memberRepository.existsByNickname(member.getNickname().concat("_new"))).isFalse();
     }
 }

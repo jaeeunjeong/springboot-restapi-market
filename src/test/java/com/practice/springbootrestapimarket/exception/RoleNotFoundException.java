@@ -1,4 +1,4 @@
 package com.practice.springbootrestapimarket.exception;
 
-public class RoleNotFoundException {
+public class RoleNotFoundException extends RuntimeException {
 }

@@ -32,7 +32,7 @@ public class SignService {
      * @param req
      */
     @Transactional
-    public void signup(SignUpRequest req) {
+    public void signUp(SignUpRequest req) {
         validateSignUpInfo(req);
         memberRepository.save(
                 SignUpRequest.toEntity(

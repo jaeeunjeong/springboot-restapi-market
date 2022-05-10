@@ -70,7 +70,7 @@ public class SignService {
      * 요청 정보와 회원의 비밀번호를 검증
      */
     private void validatePassword(SignInRequest req, Member member) {
-        if (passwordEncoder.matches(req.getPassword(), member.getPassword())) {
+        if (!passwordEncoder.matches(req.getPassword(), member.getPassword())) {
             throw new LoginFailureException();
         }
     }

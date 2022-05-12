@@ -18,8 +18,9 @@ public class SignUpRequest {
     private String nickname;
 
     public static Member toEntity(SignUpRequest req, Role role, PasswordEncoder passwordEncoder) {
-
         return new Member(req.email, passwordEncoder.encode(req.password), req.username, req.nickname, Arrays.asList(role));
     }
 
+    public SignUpRequest() {
+    }
 }

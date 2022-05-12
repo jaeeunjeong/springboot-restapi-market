@@ -15,20 +15,19 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-public class signController {
+public class SignController {
 
     @Autowired
     SignService signService;
 
-    @PostMapping("/api/signUp")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Response signIn(@Valid @RequestBody SignInRequest req) {
-        signService.signIn(req);
-        return Response.success();
-    }
-
     @PostMapping("/api/signIn")
     @ResponseStatus(HttpStatus.OK)
+    public Response signIn(@Valid @RequestBody SignInRequest req) {
+        return Response.success(signService.signIn(req));
+    }
+
+    @PostMapping("/api/signUp")
+    @ResponseStatus(HttpStatus.CREATED)
     public Response signUp(@Valid @RequestBody SignUpRequest req) {
         signService.signUp(req);
         return Response.success();

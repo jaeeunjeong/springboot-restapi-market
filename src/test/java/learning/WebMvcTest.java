@@ -1,6 +1,6 @@
 package learning;
 
-import com.practice.springbootrestapimarket.controller.response.Response;
+import com.practice.springbootrestapimarket.dto.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

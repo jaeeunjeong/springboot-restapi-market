@@ -1,7 +1,7 @@
 package com.practice.springbootrestapimarket.controller.sign;
 
 
-import com.practice.springbootrestapimarket.controller.response.Response;
+import com.practice.springbootrestapimarket.dto.response.Response;
 import com.practice.springbootrestapimarket.dto.sign.SignInRequest;
 import com.practice.springbootrestapimarket.dto.sign.SignUpRequest;
 import com.practice.springbootrestapimarket.service.sign.SignService;

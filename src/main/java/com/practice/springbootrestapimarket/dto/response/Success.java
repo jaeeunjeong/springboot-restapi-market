@@ -1,4 +1,4 @@
-package com.practice.springbootrestapimarket.controller.response;
+package com.practice.springbootrestapimarket.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

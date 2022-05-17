@@ -34,14 +34,14 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(MemberEmailAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Response memberEmailAlreadyExistsException(String email) {
+    public Response memberEmailAlreadyExistsException(MemberEmailAlreadyExistsException e) {
 
         return Response.failure(-1005, "중복된 이메일입니다.");
     }
 
     @ExceptionHandler(MemberNicknameAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Response memberNicknameAlreadyExistsException(String email) {
+    public Response memberNicknameAlreadyExistsException(MemberNicknameAlreadyExistsException e) {
         return Response.failure(-1006, "중복된 닉네임입니다.");
     }
 

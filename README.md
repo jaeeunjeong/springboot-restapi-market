@@ -1,7 +1,13 @@
-# springboot-restapi-market
-springboot를 이용해서 상품 거래 api 구축
-- [ ] 로그인
+# SpringBoot-restapi-market
+Spring Boot를 이용해서 상품 거래 api 구축
+- [x] 회원 관리
+  - [x] 토큰 생성
+  - [x] 회원 가입
+  - [x] 로그인
+  - [x] 예외 처리
+  - [ ] 회원 정보 조회
 - [ ] 카테고리
 - [ ] 게시판 대댓글
 - [ ] 사용자간 메시지
 - [ ] 페이징 처리
+- [ ] 로그 기능

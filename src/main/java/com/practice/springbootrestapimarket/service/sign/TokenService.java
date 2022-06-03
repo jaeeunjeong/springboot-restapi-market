@@ -16,13 +16,13 @@ public class TokenService {
     @Value("${jwt.max-age.access}")
     private long accessTokenMaxAgeSecond;
 
-    @Value("${jwt.max-age.refresh")
+    @Value("${jwt.max-age.refresh}")
     private long refreshTokenMaxAgeSecond;
 
     @Value("${jwt.key.access}")
     private String accessKey;
 
-    @Value("$jwt.key.refresh")
+    @Value("{$jwt.key.refresh}")
     private String refreshKey;
 
     public String makeAccessToken(String subject) {

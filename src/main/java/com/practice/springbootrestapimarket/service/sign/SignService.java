@@ -1,14 +1,12 @@
 package com.practice.springbootrestapimarket.service.sign;
 
+import com.practice.springbootrestapimarket.dto.sign.RefreshTokenResponse;
 import com.practice.springbootrestapimarket.dto.sign.SignInRequest;
 import com.practice.springbootrestapimarket.dto.sign.SignInResponse;
 import com.practice.springbootrestapimarket.dto.sign.SignUpRequest;
 import com.practice.springbootrestapimarket.entity.member.Member;
 import com.practice.springbootrestapimarket.entity.member.RoleType;
-import com.practice.springbootrestapimarket.exception.LoginFailureException;
-import com.practice.springbootrestapimarket.exception.MemberEmailAlreadyExistsException;
-import com.practice.springbootrestapimarket.exception.MemberNicknameAlreadyExistsException;
-import com.practice.springbootrestapimarket.exception.RoleNotFoundException;
+import com.practice.springbootrestapimarket.exception.*;
 import com.practice.springbootrestapimarket.repository.member.MemberRepository;
 import com.practice.springbootrestapimarket.repository.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class SignService {
 
     private final MemberRepository memberRepository;
@@ -47,6 +44,7 @@ public class SignService {
      * @param req
      * @return
      */
+    @Transactional
     public SignInResponse signIn(SignInRequest req) {
         Member member = memberRepository.findByEmail(req.getEmail()).orElseThrow(LoginFailureException::new);
         validatePassword(req, member);
@@ -82,5 +80,16 @@ public class SignService {
      */
     private String createSubject(Member member) {
         return String.valueOf(member.getId());
+    }
+
+    public RefreshTokenResponse refreshToken(String refreshToken){
+        validateRefreshToken(refreshToken);
+        String subject = tokenService.extractRefreshTokenSubject(refreshToken);
+        String accessToken = tokenService.makeAccessToken(subject);
+        return new RefreshTokenResponse(accessToken);
+    }
+
+    private void validateRefreshToken(String refreshToken) {
+        if(!tokenService.validateRefreshToken(refreshToken)) throw new AuthenticationEntryPointException();
     }
 }

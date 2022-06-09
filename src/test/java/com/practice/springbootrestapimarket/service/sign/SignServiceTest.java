@@ -1,16 +1,14 @@
 package com.practice.springbootrestapimarket.service.sign;
 
 
+import com.practice.springbootrestapimarket.dto.sign.RefreshTokenResponse;
 import com.practice.springbootrestapimarket.dto.sign.SignInRequest;
 import com.practice.springbootrestapimarket.dto.sign.SignInResponse;
 import com.practice.springbootrestapimarket.dto.sign.SignUpRequest;
 import com.practice.springbootrestapimarket.entity.member.Member;
 import com.practice.springbootrestapimarket.entity.member.Role;
 import com.practice.springbootrestapimarket.entity.member.RoleType;
-import com.practice.springbootrestapimarket.exception.LoginFailureException;
-import com.practice.springbootrestapimarket.exception.MemberEmailAlreadyExistsException;
-import com.practice.springbootrestapimarket.exception.MemberNicknameAlreadyExistsException;
-import com.practice.springbootrestapimarket.exception.RoleNotFoundException;
+import com.practice.springbootrestapimarket.exception.*;
 import com.practice.springbootrestapimarket.repository.member.MemberRepository;
 import com.practice.springbootrestapimarket.repository.role.RoleRepository;
 import org.assertj.core.api.Assertions;
@@ -25,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 public class SignServiceTest {
@@ -64,7 +64,7 @@ public class SignServiceTest {
                 .willReturn(true);
 
         // when, then
-        Assertions.assertThatThrownBy(() -> signService.signUp(createSignUpRequest()))
+        assertThatThrownBy(() -> signService.signUp(createSignUpRequest()))
                 .isInstanceOf(MemberEmailAlreadyExistsException.class);
     }
 
@@ -76,7 +76,7 @@ public class SignServiceTest {
                 .willReturn(true);
 
         // when, then
-        Assertions.assertThatThrownBy(() -> signService.signUp(createSignUpRequest()))
+        assertThatThrownBy(() -> signService.signUp(createSignUpRequest()))
                 .isInstanceOf(MemberNicknameAlreadyExistsException.class);
     }
 
@@ -87,7 +87,7 @@ public class SignServiceTest {
         BDDMockito.given(roleRepository.findByRoleType(RoleType.ROLE_NORMAL)).willReturn(Optional.empty());
 
         // when, then
-        Assertions.assertThatThrownBy(() -> signService.signUp(createSignUpRequest()))
+        assertThatThrownBy(() -> signService.signUp(createSignUpRequest()))
                 .isInstanceOf(RoleNotFoundException.class);
     }
 
@@ -115,7 +115,7 @@ public class SignServiceTest {
         BDDMockito.given(memberRepository.findByEmail(BDDMockito.any())).willReturn(Optional.empty());
 
         // when, then
-        Assertions.assertThatThrownBy(() -> signService.signIn(new SignInRequest("email", "password")))
+        assertThatThrownBy(() -> signService.signIn(new SignInRequest("email", "password")))
                 .isInstanceOf(LoginFailureException.class);
     }
 
@@ -127,8 +127,38 @@ public class SignServiceTest {
         BDDMockito.given(passwordEncoder.matches(BDDMockito.anyString(), BDDMockito.anyString())).willReturn(false);
 
         // when, then
-        Assertions.assertThatThrownBy(() -> signService.signIn(new SignInRequest("email", "password")))
+        assertThatThrownBy(() -> signService.signIn(new SignInRequest("email", "password")))
                 .isInstanceOf(LoginFailureException.class);
+    }
+
+    @DisplayName("access token이 만료되어서 refresh token으로 검증한 후 access token 새로 발급하기.")
+    @Test
+    void test8() {
+        // given
+        String refreshToken = "refreshToken";
+        String subject = "subject";
+        String accessToken = "accessToken";
+        BDDMockito.given(tokenService.validateRefreshToken(refreshToken)).willReturn(true);
+        BDDMockito.given(tokenService.extractRefreshTokenSubject(refreshToken)).willReturn(subject);
+        BDDMockito.given(tokenService.makeAccessToken(subject)).willReturn(accessToken);
+
+        // when
+        RefreshTokenResponse res = signService.refreshToken(refreshToken);
+
+        // then
+        Assertions.assertThat(res.getAccessToken()).isEqualTo(accessToken);
+
+    }
+    @DisplayName("access token이 만료되어서 refresh token으로 검증해야하는데 적절하지 않은 경우")
+    @Test
+    void test9() {
+        // given
+        String refreshToken = "refreshToken";
+        BDDMockito.given(tokenService.validateRefreshToken(refreshToken)).willReturn(false);
+
+        // when, then
+        assertThatThrownBy(()->signService.refreshToken(refreshToken))
+                .isInstanceOf(AuthenticationEntryPointException.class);
     }
 
     private Member createMember() {

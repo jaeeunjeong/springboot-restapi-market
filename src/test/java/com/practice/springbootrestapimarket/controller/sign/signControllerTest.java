@@ -1,6 +1,7 @@
 package com.practice.springbootrestapimarket.controller.sign;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.practice.springbootrestapimarket.dto.sign.RefreshTokenResponse;
 import com.practice.springbootrestapimarket.dto.sign.SignInRequest;
 import com.practice.springbootrestapimarket.dto.sign.SignInResponse;
 import com.practice.springbootrestapimarket.dto.sign.SignUpRequest;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -67,5 +69,18 @@ class signControllerTest {
                 .andExpect(status().isCreated());
 
         verify(signService).signUp(req);
+    }
+
+    @Test
+    void refreshTokenTest() throws Exception{
+        // given
+        given(signService.refreshToken("refreshToken")).willReturn(new RefreshTokenResponse("accessToken"));
+
+        // when, then
+        mockMvc.perform(
+                post("/api/refresh-token")
+                .header("Authorization", "refreshToken")
+        ).andExpect(status().isOk())
+        .andExpect(jsonPath("$.result.data.accessToken").value("accessToken"));
     }
 }

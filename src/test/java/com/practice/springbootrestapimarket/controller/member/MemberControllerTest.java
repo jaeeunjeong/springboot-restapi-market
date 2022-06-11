@@ -25,8 +25,6 @@ class MemberControllerTest {
     @Mock
     MemberService memberService;
     MockMvc mockMvc;
-    ObjectMapper objectMapper = new ObjectMapper();
-
 
     @BeforeEach
     void beforeEach() {

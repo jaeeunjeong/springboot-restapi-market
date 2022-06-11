@@ -20,6 +20,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.practice.springbootrestapimarket.factory.entity.MemberFactory.createMember;
+import static com.practice.springbootrestapimarket.factory.entity.MemberFactory.createMemberWithRoles;
+
 @DataJpaTest
 public class MemberRepositoryTest {
 
@@ -29,18 +32,6 @@ public class MemberRepositoryTest {
     RoleRepository roleRepository;
     @PersistenceContext
     EntityManager em;
-
-    private Member createMemberWithRoles(List<Role> roles) {
-        return new Member("email", "password", "username", "nickname", roles);
-    }
-
-    private Member createMember(String email, String password, String username, String nickname) {
-        return new Member(email, password, username, nickname, Collections.emptyList());
-    }
-
-    private Member createMember() {
-        return new Member("email", "password", "username", "nickname", Collections.emptyList());
-    }
 
     private void clear() {
         em.flush();

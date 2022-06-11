@@ -24,6 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Collections;
 import java.util.Optional;
 
+import static com.practice.springbootrestapimarket.factory.dto.SignUpRequestFactory.createSignUpRequest;
+import static com.practice.springbootrestapimarket.factory.entity.MemberFactory.createMember;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
@@ -160,13 +162,4 @@ public class SignServiceTest {
         assertThatThrownBy(()->signService.refreshToken(refreshToken))
                 .isInstanceOf(AuthenticationEntryPointException.class);
     }
-
-    private Member createMember() {
-        return new Member("email", "password", "jejeong", "jjam", Collections.emptyList());
-    }
-
-    private SignUpRequest createSignUpRequest() {
-        return new SignUpRequest("email", "password", "name", "nickname");
-    }
-
 }

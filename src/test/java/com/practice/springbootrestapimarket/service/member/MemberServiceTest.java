@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static com.practice.springbootrestapimarket.factory.entity.MemberFactory.createMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -70,11 +71,6 @@ class MemberServiceTest {
 
         // when, then
         assertThatThrownBy(()-> memberService.delete(1L)).isInstanceOf(MemberNotFoundException.class);
-    }
-
-
-    public Member createMember() {
-        return new Member("jejeong@email", "1!2@3#4$", "eugene", "nicky", Arrays.asList());
     }
 
 }

@@ -16,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static com.practice.springbootrestapimarket.factory.dto.SignInRequestFactory.createSignInRequest;
+import static com.practice.springbootrestapimarket.factory.dto.SignUpRequestFactory.createSignUpRequest;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -41,7 +43,7 @@ class signControllerTest {
     @Test
     void signInTest() throws Exception {
         // given
-        SignInRequest req = new SignInRequest("email@email.com", "123456a!");
+        SignInRequest req = createSignInRequest("email@email.com", "123456a!");
         given(signService.signIn(req)).willReturn(new SignInResponse("access", "refresh"));
 
         // when, then
@@ -59,7 +61,7 @@ class signControllerTest {
     @Test
     void signUpTest() throws Exception {
         // given
-        SignUpRequest req = new SignUpRequest("email@email.com", "123456a!", "username", "nickname");
+        SignUpRequest req = createSignUpRequest("email@email.com", "123456a!", "username", "nickname");
 
         // when, then
         mockMvc.perform(

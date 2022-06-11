@@ -12,6 +12,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import static com.practice.springbootrestapimarket.factory.entity.RoleFactory.createRole;
+
 @DataJpaTest
 public class RoleRepositoryTest {
 
@@ -19,8 +21,6 @@ public class RoleRepositoryTest {
     RoleRepository roleRepository;
     @PersistenceContext
     EntityManager em;
-
-    // crud....?
 
     @Test
     void createAndSelect() {
@@ -61,10 +61,6 @@ public class RoleRepositoryTest {
 
         Assertions.assertThatThrownBy(() -> roleRepository.save(createRole())).isInstanceOf(DataIntegrityViolationException.class);
 
-    }
-
-    private Role createRole() {
-        return new Role(RoleType.ROLE_NORMAL);
     }
 
     private void clear() {

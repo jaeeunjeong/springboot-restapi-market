@@ -1,6 +1,5 @@
 package com.practice.springbootrestapimarket.controller.member;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.practice.springbootrestapimarket.service.member.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -38,7 +36,7 @@ class MemberControllerTest {
 
         // when, then
         mockMvc.perform(
-                get("/api/members/{id}" + id))
+                get("/api/members/{id}", id))
                 .andExpect(status().isOk());
         verify(memberService).read(id);
     }
@@ -50,7 +48,7 @@ class MemberControllerTest {
 
         // when,  then
         mockMvc.perform(
-                delete("/api/members/{id}" + id))
+                delete("/api/members/{id}", id))
                 .andExpect(status().isOk());
         verify(memberService).delete(id);
     }

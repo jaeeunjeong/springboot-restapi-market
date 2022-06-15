@@ -8,8 +8,7 @@ import java.util.Base64;
 
 class JwtHandlerTest {
 
-    @Autowired
-    JwtHandler jwtHandler;
+    JwtHandler jwtHandler = new JwtHandler();
 
     @Test
     void createATokenTest() {

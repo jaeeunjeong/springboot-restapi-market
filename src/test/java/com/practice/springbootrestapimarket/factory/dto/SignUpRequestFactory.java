@@ -9,7 +9,7 @@ public class SignUpRequestFactory {
     }
 
     public static SignUpRequest createSignUpRequest(String email, String password, String username, String nickname) {
-        return new SignUpRequest("jejeong@email", "1!2@3#4$abc", "eugene", "nicky");
+        return new SignUpRequest(email, password, username, nickname);
     }
 
     public static SignUpRequest createSignUpRequestWithEmail(String email) {

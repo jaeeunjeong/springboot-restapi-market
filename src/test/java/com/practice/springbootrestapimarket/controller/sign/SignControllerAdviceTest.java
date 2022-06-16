@@ -1,5 +1,7 @@
 package com.practice.springbootrestapimarket.controller.sign;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.practice.springbootrestapimarket.advice.ExceptionAdvice;
 import com.practice.springbootrestapimarket.exception.AuthenticationEntryPointException;
 import com.practice.springbootrestapimarket.service.sign.SignService;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,30 +29,29 @@ public class SignControllerAdviceTest {
 
     @BeforeEach
     void beforeEach() {
-        mockMvc = MockMvcBuilders.standaloneSetup(signController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(signController).setControllerAdvice(new ExceptionAdvice()).build();
     }
 
-//    @Test
-//    @DisplayName("인증되지 않은 사용자의 로그인시 예외 처리")
-//    void test1() throws Exception {
-//        // given
-//        given(signService.refreshToken(anyString())).willThrow(AuthenticationEntryPointException.class);
-//
-//        // when, then
-//        mockMvc.perform(
-//                post("/api/refresh-token")
-//                        .header("Authorization", "refreshToken"))
-//                .andExpect(status().isUnauthorized())
-//                .andExpect(jsonPath("$.code").value(-1001));
-//    }
-
     @Test
-    @DisplayName("토큰이 아예 없는 경우 refreshtoke 확인")
-    void test2() throws Exception {
-        // given, when, then
+    @DisplayName("토큰이 아예 없는 경우 refresh token 확인")
+    void test1() throws Exception {
+        // given
+        given(signService.refreshToken(anyString())).willThrow(AuthenticationEntryPointException.class);
+
+        // when, then
         mockMvc.perform(
                 post("/api/refresh-token")
                         .header("Authorization", "refreshToken"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value(-1001));
+    }
+
+    @Test
+    @DisplayName("누락된 HTTP 요청 헤더로 인한 예외 발생")
+    void test2() throws Exception {
+        // given, when, then
+        mockMvc.perform(
+                post("/api/refresh-token"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(-1009));
     }

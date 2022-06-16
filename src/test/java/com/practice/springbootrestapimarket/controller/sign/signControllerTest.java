@@ -61,7 +61,7 @@ class signControllerTest {
     @Test
     void signUpTest() throws Exception {
         // given
-        SignUpRequest req = createSignUpRequest("email@email.com", "123456a!", "username", "nickname");
+        SignUpRequest req = createSignUpRequest();
 
         // when, then
         mockMvc.perform(

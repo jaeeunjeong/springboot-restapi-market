@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static com.practice.springbootrestapimarket.factory.dto.SignUpRequestFactory.createSignUpRequest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
@@ -40,15 +41,15 @@ class ExceptionAdviceTest {
     }
 
     @Test
-    void signInMethodArgumentNotValidExceptionTest() throws Exception{
+    void signInMethodArgumentNotValidExceptionTest() throws Exception {
         // given
         SignInRequest req = new SignInRequest("email", "1234");
 
         // when, then
         mockMvc.perform(
                 post("/api/signIn")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(req))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req))
         )
                 .andExpect(status().isBadRequest());
     }
@@ -56,7 +57,7 @@ class ExceptionAdviceTest {
     @Test
     void signUpMethodArgumentNotValidExceptionTest() throws Exception {
         // given
-        SignUpRequest req = new SignUpRequest("", "", "", "");
+        SignUpRequest req = createSignUpRequest("", "", "", "");
 
         // when, then
         mockMvc.perform(
@@ -69,7 +70,7 @@ class ExceptionAdviceTest {
     @Test
     void loginFailureExceptionTest() throws Exception {
         // given
-        SignInRequest req = new SignInRequest("email@com", "password");
+        SignInRequest req = new SignInRequest("email@com", "password1!");
         given(signService.signIn(any())).willThrow(LoginFailureException.class);
         // when, then
         mockMvc.perform(
@@ -82,7 +83,7 @@ class ExceptionAdviceTest {
     @Test
     void memberEmailAlreadyExistsExceptionTest() throws Exception {
         // given
-        SignUpRequest req = new SignUpRequest("email@com", "password", "usin", "nicky");
+        SignUpRequest req = createSignUpRequest();
         doThrow(MemberEmailAlreadyExistsException.class).when(signService).signUp(any());
 
         // when, then
@@ -96,7 +97,7 @@ class ExceptionAdviceTest {
     @Test
     void memberNicknameAlreadyExistsExceptionTest() throws Exception {
         // given
-        SignUpRequest req = new SignUpRequest("email@com", "password", "usin", "nicky");
+        SignUpRequest req = createSignUpRequest();
         doThrow(MemberNicknameAlreadyExistsException.class).when(signService).signUp(any());
 
         // when, then
@@ -110,7 +111,7 @@ class ExceptionAdviceTest {
     @Test
     void memberNotFoundExceptionTest() throws Exception {
         // given
-        SignUpRequest req = new SignUpRequest("email@com", "password", "usin", "nicky");
+        SignUpRequest req = createSignUpRequest();
         doThrow(MemberNotFoundException.class).when(signService).signUp(any());
 
         // when, then
@@ -124,7 +125,7 @@ class ExceptionAdviceTest {
     @Test
     void roleNotFoundExceptionTest() throws Exception {
         // given
-        SignUpRequest req = new SignUpRequest("email@net", "password1!2@", "eugean", "nicky");
+        SignUpRequest req = createSignUpRequest();
         doThrow(RoleNotFoundException.class).when(signService).signUp(any());
 
         // when, then

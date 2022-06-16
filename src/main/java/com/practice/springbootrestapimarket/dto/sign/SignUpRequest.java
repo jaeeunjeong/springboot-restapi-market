@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class SignUpRequest {
 
     @NotBlank(message = "이메일을 입력해주세요.")
-    @Email(message = "적절항 이메일 형식이 아닙니다.")
+    @Email(message = "적절한 이메일 형식이 아닙니다.")
     private String email;
 
     @NotBlank(message = "비밀 번호를 입력해주세요.")

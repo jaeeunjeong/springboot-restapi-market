@@ -1,6 +1,6 @@
 package com.practice.springbootrestapimarket.config.security;
 
-import com.practice.springbootrestapimarket.service.sign.TokenService;
+import com.practice.springbootrestapimarket.config.config.TokenHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final com.practice.springbootrestapimarket.service.sign.TokenService tokenService;
+    private final TokenHelper accessTokenHelper;
     private final CustomUserDetailsService customUserDetailsService;
 
     @Override
@@ -33,17 +33,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable() // API는 cookie나 session에 의존하는 경향이 적기에 비활성화 시키는 추세 (JWT를 이용하기 때문)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                    .authorizeRequests()
-                        .antMatchers(HttpMethod.POST, "/api/signIn","/api/signUp", "/api/refresh-token").permitAll()
-                        .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-                        .antMatchers(HttpMethod.DELETE, "/api/member/{id}/**").access("@memberGuard.check(#id)")
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/api/signIn", "/api/signUp", "/api/refresh-token").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/member/{id}/**").access("@memberGuard.check(#id)")
                 .anyRequest().hasAnyRole("ADMIN")
                 .and()
                 .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(tokenService, customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(accessTokenHelper, customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
     }
 
     /**

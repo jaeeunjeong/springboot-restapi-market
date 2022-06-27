@@ -1,0 +1,25 @@
+package com.practice.springbootrestapimarket.config.config;
+
+import com.practice.springbootrestapimarket.handler.JwtHandler;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@RequiredArgsConstructor
+public class TokenHelper {
+    private final JwtHandler jwtHandler;
+    private final String key;
+    private final long maxAgeSeconds;
+
+    public String createToken(String subject) {
+        return jwtHandler.createToken(key, subject, maxAgeSeconds);
+    }
+
+    public boolean validate(String token) {
+        return jwtHandler.validate(key, token);
+    }
+
+    public String extractSubject(String token) {
+        return jwtHandler.extractSubject(key, token);
+    }
+}

@@ -1,6 +1,6 @@
 package com.practice.springbootrestapimarket.config.security;
 
-import com.practice.springbootrestapimarket.service.sign.TokenService;
+import com.practice.springbootrestapimarket.config.config.TokenHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,17 +17,15 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
-    private final TokenService tokenService;
+    private final TokenHelper accessTokenHelper;
     private final CustomUserDetailsService customUserDetailsService;
 
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         String token = extractToken(request);
-        if(validateAccessToken(token)){
+        if (validateAccessToken(token)) {
             setAccessAuthentication("access", token);
-        }else if(validateRefreshToken(token)){
-            setRefreshAuthentication("refresh", token);
         }
         chain.doFilter(request, response);
     }
@@ -38,22 +36,12 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     // 토큰 검증하기
     private boolean validateAccessToken(String token) {
-        return token != null && tokenService.validateAccessToken(token);
+        return token != null && accessTokenHelper.validate(token);
     }
 
-    private boolean validateRefreshToken(String token) {
-        return token != null && tokenService.validateRefreshToken(token);
-    }
-
-    //
-    private void setAccessAuthentication(String type, String token){
-        String userId = tokenService.extractAccessTokenSubject(token);
+    private void setAccessAuthentication(String type, String token) {
+        String userId = accessTokenHelper.extractSubject(token);
         CustomUserDetails userDetails = customUserDetailsService.loadUserByUsername(userId);
-        SecurityContextHolder.getContext().setAuthentication(null); // authenticationtoken넣기.
-    }
-
-    private void setRefreshAuthentication(String type, String token){
-        String userId = tokenService.extractAccessTokenSubject(token);
-        CustomUserDetails userDetails = customUserDetailsService.loadUserByUsername(userId);
+        SecurityContextHolder.getContext().setAuthentication(new CustomAuthenticationToken(userDetails, userDetails.getAuthorities()));
     }
 }

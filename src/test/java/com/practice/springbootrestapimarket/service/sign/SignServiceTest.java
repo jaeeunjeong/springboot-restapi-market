@@ -1,6 +1,7 @@
 package com.practice.springbootrestapimarket.service.sign;
 
 
+import com.practice.springbootrestapimarket.config.config.TokenHelper;
 import com.practice.springbootrestapimarket.dto.sign.RefreshTokenResponse;
 import com.practice.springbootrestapimarket.dto.sign.SignInRequest;
 import com.practice.springbootrestapimarket.dto.sign.SignInResponse;
@@ -12,6 +13,7 @@ import com.practice.springbootrestapimarket.exception.*;
 import com.practice.springbootrestapimarket.repository.member.MemberRepository;
 import com.practice.springbootrestapimarket.repository.role.RoleRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,16 +33,22 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ExtendWith(MockitoExtension.class)
 public class SignServiceTest {
 
-    @InjectMocks
     SignService signService;
     @Mock
     MemberRepository memberRepository;
     @Mock
-    TokenService tokenService;
-    @Mock
     PasswordEncoder passwordEncoder;
     @Mock
     RoleRepository roleRepository;
+    @Mock
+    TokenHelper accessTokenHelper;
+    @Mock
+    TokenHelper refreshTokenHelper;
+
+    @BeforeEach
+    void beforeEach(){
+        signService = new SignService(memberRepository, roleRepository, passwordEncoder, accessTokenHelper, refreshTokenHelper);
+    }
 
     @DisplayName("회원가입")
     @Test
@@ -99,8 +107,8 @@ public class SignServiceTest {
         // given email, password, accessToken, refreshToken
         BDDMockito.given(memberRepository.findByEmail(BDDMockito.any())).willReturn(Optional.of(createMember()));
         BDDMockito.given(passwordEncoder.matches(BDDMockito.anyString(), BDDMockito.anyString())).willReturn(true);
-        BDDMockito.given(tokenService.makeAccessToken(BDDMockito.anyString())).willReturn("access");
-        BDDMockito.given(tokenService.makeRefreshToken(BDDMockito.anyString())).willReturn("refresh");
+        BDDMockito.given(accessTokenHelper.createToken(BDDMockito.anyString())).willReturn("access");
+        BDDMockito.given(refreshTokenHelper.createToken(BDDMockito.anyString())).willReturn("refresh");
 
         // when
         SignInResponse res = signService.signIn(new SignInRequest("email", "password"));
@@ -140,9 +148,9 @@ public class SignServiceTest {
         String refreshToken = "refreshToken";
         String subject = "subject";
         String accessToken = "accessToken";
-        BDDMockito.given(tokenService.validateRefreshToken(refreshToken)).willReturn(true);
-        BDDMockito.given(tokenService.extractRefreshTokenSubject(refreshToken)).willReturn(subject);
-        BDDMockito.given(tokenService.makeAccessToken(subject)).willReturn(accessToken);
+        BDDMockito.given(refreshTokenHelper.validate(refreshToken)).willReturn(true);
+        BDDMockito.given(refreshTokenHelper.extractSubject(refreshToken)).willReturn(subject);
+        BDDMockito.given(accessTokenHelper.createToken(subject)).willReturn(accessToken);
 
         // when
         RefreshTokenResponse res = signService.refreshToken(refreshToken);
@@ -156,7 +164,7 @@ public class SignServiceTest {
     void test9() {
         // given
         String refreshToken = "refreshToken";
-        BDDMockito.given(tokenService.validateRefreshToken(refreshToken)).willReturn(false);
+        BDDMockito.given(refreshTokenHelper.validate(refreshToken)).willReturn(false);
 
         // when, then
         assertThatThrownBy(()->signService.refreshToken(refreshToken))

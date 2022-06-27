@@ -1,5 +1,6 @@
 package com.practice.springbootrestapimarket.service.sign;
 
+import com.practice.springbootrestapimarket.config.config.TokenHelper;
 import com.practice.springbootrestapimarket.dto.sign.RefreshTokenResponse;
 import com.practice.springbootrestapimarket.dto.sign.SignInRequest;
 import com.practice.springbootrestapimarket.dto.sign.SignInResponse;
@@ -21,7 +22,9 @@ public class SignService {
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;
+    //private final TokenService tokenService;
+    private final TokenHelper accessTokenHelper;
+    private final TokenHelper refreshTokenHelper;
 
     /**
      * 회원 가입
@@ -49,8 +52,8 @@ public class SignService {
         Member member = memberRepository.findByEmail(req.getEmail()).orElseThrow(LoginFailureException::new);
         validatePassword(req, member);
         String subject = createSubject(member);
-        String accessToken = tokenService.makeAccessToken(subject);
-        String refreshToken = tokenService.makeRefreshToken(subject);
+        String accessToken = accessTokenHelper.createToken(subject);
+        String refreshToken = refreshTokenHelper.createToken(subject);
         return new SignInResponse(accessToken, refreshToken);
     }
 
@@ -84,12 +87,12 @@ public class SignService {
 
     public RefreshTokenResponse refreshToken(String refreshToken){
         validateRefreshToken(refreshToken);
-        String subject = tokenService.extractRefreshTokenSubject(refreshToken);
-        String accessToken = tokenService.makeAccessToken(subject);
+        String subject = refreshTokenHelper.extractSubject(refreshToken);
+        String accessToken = accessTokenHelper.createToken(subject);
         return new RefreshTokenResponse(accessToken);
     }
 
     private void validateRefreshToken(String refreshToken) {
-        if(!tokenService.validateRefreshToken(refreshToken)) throw new AuthenticationEntryPointException();
+        if(!refreshTokenHelper.validate(refreshToken)) throw new AuthenticationEntryPointException();
     }
 }

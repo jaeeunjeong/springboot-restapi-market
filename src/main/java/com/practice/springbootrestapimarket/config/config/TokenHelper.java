@@ -2,9 +2,7 @@ package com.practice.springbootrestapimarket.config.config;
 
 import com.practice.springbootrestapimarket.handler.JwtHandler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
 @RequiredArgsConstructor
 public class TokenHelper {
     private final JwtHandler jwtHandler;

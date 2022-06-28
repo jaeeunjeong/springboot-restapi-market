@@ -4,7 +4,9 @@ import com.practice.springbootrestapimarket.exception.AccessDeniedException;
 import com.practice.springbootrestapimarket.exception.AuthenticationEntryPointException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
+@ApiIgnore
 @RestController
 public class ExceptionController {
     @GetMapping("/exception/entry-point")

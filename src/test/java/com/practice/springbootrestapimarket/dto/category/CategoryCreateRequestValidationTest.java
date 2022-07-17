@@ -3,11 +3,9 @@ package com.practice.springbootrestapimarket.dto.category;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,7 +18,7 @@ public class CategoryCreateRequestValidationTest {
     Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
-    void validateTest(){
+    void validateTest() {
         // given
         CategoryCreateRequest req = createCategoryCreateRequest();
 
@@ -33,7 +31,7 @@ public class CategoryCreateRequestValidationTest {
 
     @DisplayName("이름이 너무 짧은 경우")
     @Test
-    void validateTest2(){
+    void validateTest2() {
         // given
         String invalidValue = "a";
         CategoryCreateRequest req = createCategoryCreateRequestWithName(invalidValue);
@@ -43,14 +41,44 @@ public class CategoryCreateRequestValidationTest {
 
         // then
         assertThat(validate).isNotEmpty();
-        assertThat(validate.stream().map(v-> v.getInvalidValue()).collect(Collectors.toSet()).contains(invalidValue));
+        assertThat(validate.stream().map(v -> v.getInvalidValue()).collect(Collectors.toSet()).contains(invalidValue));
     }
 
     @DisplayName("이름이 너무 긴 경우")
     @Test
-    void validateTest3(){
+    void validateTest3() {
         // given
         String name = "cccccccccccccccccccccccccccccccccccccccccccccccccc";// c 50개
+        CategoryCreateRequest req = createCategoryCreateRequestWithName(name);
+
+        // when
+        Set<ConstraintViolation<CategoryCreateRequest>> validate = validator.validate(req);
+
+        // then
+        assertThat(validate).isNotEmpty();
+        assertThat(validate.stream().map(v -> v.getInvalidValue()).collect(Collectors.toSet())).contains(name);
+    }
+
+    @DisplayName("이름에 null이 들어가는 경우")
+    @Test
+    void validateTest4() {
+        // given
+        String name = null;
+        CategoryCreateRequest req = createCategoryCreateRequestWithName(name);
+
+        // when
+        Set<ConstraintViolation<CategoryCreateRequest>> validate = validator.validate(req);
+
+        // then
+        assertThat(validate).isNotEmpty();
+        assertThat(validate.stream().map(v -> v.getInvalidValue()).collect(Collectors.toSet())).contains(name);
+    }
+
+    @DisplayName("이름에 값이 안 들어가는 경우")
+    @Test
+    void validateTest5() {
+        // given
+        String name = "";// c 50개
         CategoryCreateRequest req = createCategoryCreateRequestWithName(name);
 
         // when

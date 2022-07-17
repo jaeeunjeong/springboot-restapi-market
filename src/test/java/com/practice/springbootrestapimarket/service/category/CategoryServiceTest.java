@@ -80,6 +80,6 @@ class CategoryServiceTest {
         given(categoryRepository.existsById(anyLong())).willReturn(false);
 
         // when, then
-        assertThatThrownBy(()-> categoryService.delete(1L)).isInstanceOf(CategoryNotFoundException.class);
+        assertThatThrownBy(() -> categoryService.delete(1L)).isInstanceOf(CategoryNotFoundException.class);
     }
 }

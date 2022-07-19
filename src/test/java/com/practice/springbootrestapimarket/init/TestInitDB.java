@@ -1,10 +1,12 @@
 package com.practice.springbootrestapimarket.init;
 
+import com.practice.springbootrestapimarket.entity.category.Category;
 import com.practice.springbootrestapimarket.entity.member.Member;
 import com.practice.springbootrestapimarket.entity.member.Role;
 import com.practice.springbootrestapimarket.entity.member.RoleType;
 import com.practice.springbootrestapimarket.exception.MemberNotFoundException;
 import com.practice.springbootrestapimarket.exception.RoleNotFoundException;
+import com.practice.springbootrestapimarket.repository.category.CategoryRepository;
 import com.practice.springbootrestapimarket.repository.member.MemberRepository;
 import com.practice.springbootrestapimarket.repository.role.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ public class TestInitDB {
     MemberRepository memberRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    CategoryRepository categoryRepository;
 
     private String adminEmail = "admin@shop.com";
     private String user1Email = "user1@shop.com";
@@ -37,6 +41,7 @@ public class TestInitDB {
         initRole();
         initTestAdmin();
         initTestMember();
+        initCategory();
     }
 
     private void initRole() {
@@ -86,5 +91,12 @@ public class TestInitDB {
 
     public String getPassword() {
         return password;
+    }
+
+
+    private void initCategory() {
+        Category category1 = new Category("공지 사항", null);
+        Category category2 = new Category("처음 오신 분은 꼭 확인해주세요", category1);
+        categoryRepository.saveAll(Arrays.asList(category1, category2));
     }
 }

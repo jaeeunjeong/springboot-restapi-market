@@ -28,12 +28,12 @@ class CategoryControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
-    void beforeEach(){
+    void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
     }
 
     @Test
-    void readAllTest() throws Exception{
+    void readAllTest() throws Exception {
         // given, when, then
         mockMvc.perform(get("/api/categories"))
                 .andExpect(status().isOk());
@@ -41,21 +41,21 @@ class CategoryControllerTest {
     }
 
     @Test
-    void createTest() throws Exception{
+    void createTest() throws Exception {
         // given
         CategoryCreateRequest req = new CategoryCreateRequest("공지사항", null);
 
         // when, then
         mockMvc.perform(
                 post("/api/categories")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isOk());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isCreated());
         verify(categoryService).create(req);
     }
 
     @Test
-    void deleteTest() throws Exception{
+    void deleteTest() throws Exception {
         // given
         Long id = 1L;
 

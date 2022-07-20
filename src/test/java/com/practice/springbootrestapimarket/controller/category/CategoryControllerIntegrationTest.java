@@ -75,33 +75,19 @@ public class CategoryControllerIntegrationTest {
         List<Category> before = categoryRepository.findAll();
 
         // when, then
-        mockMvc.perform(post("/api/categories")
-                .header("Authorization", signInResponse.getAccessToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(req)))
+        mockMvc.perform(
+                post("/api/categories")
+                        .header("Authorization", signInResponse.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isCreated());
         List<Category> result = categoryRepository.findAll();
         Assertions.assertThat(result.size()).isEqualTo(before.size() + 1);
     }
 
-    @DisplayName("관리자가 아닌 사람이 카테고리를 만드는 경우 -> 회원이 아님")
+    @DisplayName("관리자가 아닌 사람이 카테고리를 만드는 경우 -> 일반 사용자인 경우")
     @Test
     void test3() throws Exception {
-        // given
-        CategoryCreateRequest req = new CategoryCreateRequest("공지사항", null);
-
-        // when, then
-        mockMvc.perform(
-                post("/api/categories")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
-    }
-
-    @DisplayName("관리자가 아닌 사람이 카테고리를 만드는 경우 -> 일반 사용자")
-    @Test
-    void test4() throws Exception {
         // given
         CategoryCreateRequest req = new CategoryCreateRequest("공지사항", null);
         SignInResponse signInResponse = signService.signIn(createSignInRequest(testInitDB.getUser1Email(), testInitDB.getPassword()));
@@ -116,13 +102,27 @@ public class CategoryControllerIntegrationTest {
                 .andExpect(redirectedUrl("/exception/entry-point"));
     }
 
+    @DisplayName("관리자가 아닌 사람이 카테고리를 만드는 경우 -> 회원이 아닌 경우")
+    @Test
+    void test4() throws Exception {
+        // given
+        CategoryCreateRequest req = new CategoryCreateRequest("공지사항", null);
+
+        // when, then
+        mockMvc.perform(
+                post("/api/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/exception/access-denied"));
+    }
+
     @DisplayName("카테고리 삭제하기")
     @Test
     void test5() throws Exception {
         // given
-        CategoryCreateRequest req = new CategoryCreateRequest("공지사항", null);
         SignInResponse signInResponse = signService.signIn(createSignInRequest(testInitDB.getAdminEmail(), testInitDB.getPassword()));
-        Long id = 1L;
+        Long id = categoryRepository.findAll().get(0).getId();
 
         // when, then
         mockMvc.perform(
@@ -147,10 +147,10 @@ public class CategoryControllerIntegrationTest {
                 delete("/api/categories/{id}", id)
                         .header("Authorization", signInResponse.getAccessToken()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(redirectedUrl("/exception/entry-point"));
     }
 
-    @DisplayName("관리자가 아닌 사람이 카테고리를 삭제하는 경우 -> 사용자가 아닌 경우")
+    @DisplayName("관리자가 아닌 사람이 카테고리를 삭제하는 경우 -> 회원이 아닌 경우")
     @Test
     void test7() throws Exception {
         // given

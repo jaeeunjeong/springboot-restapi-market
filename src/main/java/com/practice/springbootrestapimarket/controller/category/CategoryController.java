@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Api(value = "Category Controller", tags = "Category")
 @RestController
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class CategoryController {
     @ApiOperation(value = "카테고리 생성", notes = "카테고리를 만듭니다.")
     @PostMapping("/api/categories")
     @ResponseStatus(HttpStatus.CREATED)
-    public Response create(CategoryCreateRequest req) {
+    public Response create(@Valid @RequestBody CategoryCreateRequest req) {
         categoryService.create(req);
         return Response.success();
     }

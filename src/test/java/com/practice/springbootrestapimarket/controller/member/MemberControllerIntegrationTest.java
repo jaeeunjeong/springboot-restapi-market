@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,7 +97,7 @@ public class MemberControllerIntegrationTest {
         mockMvc.perform(
                 delete("/api/members/{id}", member.getId()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(redirectedUrl("/exception/access-denied"));
     }
 
     @Test
@@ -113,12 +112,12 @@ public class MemberControllerIntegrationTest {
                 delete("/api/members/{id}", member.getId())
                         .header("Authorization", otherUser.getAccessToken()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(redirectedUrl("/exception/entry-point"));
     }
 
     @Test
         // access 토큰이 아닌 refresh 토큰으로 요청한 경우 -> 인증이 안 됨.
-    void deleteByRefreshToken() throws Exception{
+    void deleteByRefreshToken() throws Exception {
         // given
         Member member = memberRepository.findByEmail(testInitDB.getUser1Email()).orElseThrow(MemberNotFoundException::new);
         SignInResponse signInRes = signService.signIn(new SignInRequest(testInitDB.getUser1Email(), testInitDB.getPassword()));
@@ -128,6 +127,6 @@ public class MemberControllerIntegrationTest {
                 delete("/api/memberes/{id}", member.getId())
                         .header("Authorization", signInRes.getRefreshToken()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(redirectedUrl("/exception/entry-point"));
     }
 }

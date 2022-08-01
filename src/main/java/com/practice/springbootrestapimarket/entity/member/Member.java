@@ -13,6 +13,11 @@ import static java.util.stream.Collectors.toSet;
 
 @Entity
 @Getter
+@NamedEntityGraph(
+        name = "Member.roles",
+        attributeNodes = @NamedAttributeNode(value = "roles", subgraph = "Member.roles.role"),
+        subgraphs = @NamedSubgraph(name = "Member.roles.role", attributeNodes = @NamedAttributeNode("role"))
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends EntityDate {
     @Id

@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     // 인증된 사용자 정보를 반환해준다.
     @Override
     public CustomUserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        Member member = memberRepository.findById(Long.valueOf(userId)).orElseGet(() -> new Member(null, null, null, null, Arrays.asList()));
+        Member member = memberRepository.findWithRolesById(Long.valueOf(userId)).orElseGet(() -> new Member(null, null, null, null, Arrays.asList()));
         return new CustomUserDetails(
                 String.valueOf(member.getId()),
                 member.getRoles().stream().map(memberRole -> memberRole.getRole())

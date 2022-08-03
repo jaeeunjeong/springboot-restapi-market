@@ -11,7 +11,9 @@
   - [x] 예외 처리
   - [x] 회원 정보 조회
 - [x] 카테고리
-- [ ] 게시판 대댓글
+- [ ] 게시판
+    - [ ] 조회, 생성, 수정, 삭제
+    - [ ] 댓글
 - [ ] 사용자간 메시지
 - [ ] 페이징 처리
 - [ ] 로그 기능
@@ -22,3 +24,6 @@ Java 8, SpringBoot, H2, JPA, Gradle
 - 로그인 서비스를 추상화
 - Swagger를 이용한 API 문서화
 - 카테고리의 계층화 
+
+## 참고
+https://github.com/SongHeeJae/kuke-market

@@ -1,6 +1,6 @@
 package com.practice.springbootrestapimarket.entity.post;
 
-import com.practice.springbootrestapimarket.exception.UnSupportedImageFormatException;
+import com.practice.springbootrestapimarket.exception.UnsupportedImageFormatException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,11 +49,11 @@ public class Image {
 
     private String extractExtension(String originName) {
         try {
-            String ext = originName.substring(originName.lastIndexOf("." + 1));
+            String ext = originName.substring(originName.lastIndexOf(".") + 1);
             if (isSupportFormat(ext)) return ext;
         } catch (StringIndexOutOfBoundsException e) {
         }
-        throw new UnSupportedImageFormatException();
+        throw new UnsupportedImageFormatException();
     }
 
     private boolean isSupportFormat(String ext) {

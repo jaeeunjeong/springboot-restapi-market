@@ -26,6 +26,10 @@ public class Post extends EntityDate {
 
     @Column(nullable = false)
     @Lob
+    private String content;
+
+    @Column(nullable = false)
+    @Lob
     private Long price;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,8 +45,9 @@ public class Post extends EntityDate {
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Image> images;
 
-    public Post(String title, Long price, Member member, Category category, List<Image> images) {
+    public Post(String title, String content, Long price, Member member, Category category, List<Image> images) {
         this.title = title;
+        this.content = content;
         this.price = price;
         this.member = member;
         this.category = category;

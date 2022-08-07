@@ -8,10 +8,11 @@ import com.practice.springbootrestapimarket.exception.UnsupportedImageFormatExce
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 import static com.practice.springbootrestapimarket.factory.entity.CategoryFactory.createCategory;
+import static com.practice.springbootrestapimarket.factory.entity.ImageFactory.createImage;
+import static com.practice.springbootrestapimarket.factory.entity.ImageFactory.createImageWithName;
 import static com.practice.springbootrestapimarket.factory.entity.MemberFactory.createMember;
+import static com.practice.springbootrestapimarket.factory.entity.PostFactory.createPost;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -20,12 +21,8 @@ public class ImageTest {
     @DisplayName("이미지 잘 들어오는지 확인")
     @Test
     void test1() {
-        // given
-        String name = "hello";
-        String extension = "jpeg";
-
-        // when, then
-        Image image = new Image(name + "." + extension);
+        // given, when, then
+        Image image = createImageWithName("hello.jpg");
     }
 
     @DisplayName("확장자가 잘못 되었을 때 에러 발생 확인")
@@ -36,7 +33,7 @@ public class ImageTest {
         String extension = "invalid";
 
         // when, then
-        assertThatThrownBy(() -> new Image(name + "." + extension)).isInstanceOf(UnsupportedImageFormatException.class);
+        assertThatThrownBy(() -> createImageWithName(name + "." + extension)).isInstanceOf(UnsupportedImageFormatException.class);
     }
 
     @DisplayName("확장자가 없을 때 에러 발생 확인")
@@ -46,21 +43,17 @@ public class ImageTest {
         String name = "hello";
 
         // when, then
-        assertThatThrownBy(
-                () -> new Image(name))
-                .isInstanceOf(UnsupportedImageFormatException.class);
+        assertThatThrownBy(() -> createImageWithName(name)).isInstanceOf(UnsupportedImageFormatException.class);
     }
 
     @DisplayName("initPost 확인하기")
     @Test
     void test4() {
         // given
-        Image image = new Image("hello.jpg");
-        Member member = createMember();
-        Category category = createCategory();
+        Image image = createImage();
 
         // when
-        Post post = new Post("Gram 판매합니다.", 1_600_000L, member, category, Arrays.asList());
+        Post post = createPost();
         image.initPost(post);
 
         // then
@@ -71,14 +64,12 @@ public class ImageTest {
     @Test
     void test5() {
         // given
-        Member member = createMember();
-        Category category = createCategory();
-        Image image = new Image("hello.jpg");
-        Post post1 = new Post("Gram 판매합니다.", 1_600_000L, member, category, Arrays.asList());
+        Image image = createImage();
+        Post post1 = createPost();
         image.initPost(post1);
 
         // when
-        Post post2 = new Post("Gram 판매합니다.", 1_600_000L, member, category, Arrays.asList());
+        Post post2 = createPost();
         image.initPost(post2);
 
         // then

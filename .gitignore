@@ -38,3 +38,6 @@ out/
 
 ### JWT SETTING ###
 application-secret.yml
+
+### File Address ###
+/src/test/resource/satic/*

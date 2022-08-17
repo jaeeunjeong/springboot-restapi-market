@@ -4,9 +4,11 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+    servlet.multipart.max-file-size: 5MB
+    servlet.multipart.max-request-size: 5MB
   jpa:
-   hibernate:
-     ddl-auto: create
+    hibernate:
+      ddl-auto: create
   profiles:
     active: local
     include: secret

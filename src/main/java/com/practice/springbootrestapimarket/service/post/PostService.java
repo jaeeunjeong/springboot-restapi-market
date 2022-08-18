@@ -7,11 +7,13 @@ import com.practice.springbootrestapimarket.entity.post.Post;
 import com.practice.springbootrestapimarket.repository.category.CategoryRepository;
 import com.practice.springbootrestapimarket.repository.member.MemberRepository;
 import com.practice.springbootrestapimarket.repository.post.PostRepository;
+import com.practice.springbootrestapimarket.service.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +22,7 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
     private final PostRepository postRepository;
+    private final FileService fIleService;
 
     public PostCreateResponse create(PostCreateRequest req) {
         Post post = postRepository.save(
@@ -35,6 +38,6 @@ public class PostService {
     }
 
     private void uploadImages(List<Image> postImages, List<MultipartFile> fileImages) {
-
+        IntStream.range(0, postImages.size()).forEach(i -> fIleService.upload(fileImages.get(i), postImages.get(i).getUniqueName()));
     }
 }

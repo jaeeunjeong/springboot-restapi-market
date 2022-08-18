@@ -27,4 +27,8 @@ public class PostFactory {
     public static Post createPostWithImage(Member member, Category category, List<Image> images) {
         return new Post("스포츠 스타 줌 팝니다!", "거의 새거!", 160_000L, member, category, images);
     }
+
+    public static Post createPostWithImage(List<Image> images) {
+        return new Post("스포츠 스타 줌 팝니다!", "거의 새거!", 160_000L, createMember(), createCategory(), images);
+    }
 }

@@ -4,7 +4,7 @@ import com.practice.springbootrestapimarket.dto.response.Response;
 import com.practice.springbootrestapimarket.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -32,10 +32,11 @@ public class ExceptionAdvice {
     public Response accessDeniedException() {
         return Response.failure(-1002, "접근이 거부되었습니다.");
     }
+//
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(BindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Response methodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public Response bindException(BindException e) {
         return Response.failure(-1003, e.getBindingResult().getFieldError().getDefaultMessage());
     }
 
@@ -86,5 +87,12 @@ public class ExceptionAdvice {
     public Response cannotConvertNestedStructureException(CannotConvertNestedStructureException e) {
         log.info("e = {}", e.getMessage());
         return Response.failure(-1011, "카테고리를 만들 수 없습니다.");
+    }
+
+    @ExceptionHandler(FileUploadFailureException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response fileUploadFailureException(FileUploadFailureException e) {
+        log.info("e = {}", e.getMessage());
+        return Response.failure(-1014, "파일 업로드에 실패하였습니다.");
     }
 }

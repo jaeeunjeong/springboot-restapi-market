@@ -10,12 +10,14 @@ import com.practice.springbootrestapimarket.repository.post.PostRepository;
 import com.practice.springbootrestapimarket.service.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PostService {
 
@@ -24,6 +26,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final FileService fIleService;
 
+    @Transactional
     public PostCreateResponse create(PostCreateRequest req) {
         Post post = postRepository.save(
                 PostCreateRequest.toEntity(

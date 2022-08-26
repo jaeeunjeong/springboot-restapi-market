@@ -13,7 +13,7 @@ import java.time.Duration;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${upload, image.location}")
+    @Value("${upload.image.location}")
     private String location;
 
     @Override

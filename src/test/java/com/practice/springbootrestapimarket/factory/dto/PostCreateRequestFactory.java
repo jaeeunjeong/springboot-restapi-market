@@ -34,4 +34,8 @@ public class PostCreateRequestFactory {
     public static PostCreateRequest postCreateRequestWithImages(List<MultipartFile> images) {
         return new PostCreateRequest("갤럭시 s22 판매", "갤럭시 s22울트라도 팔아요", 80_000_000L, 1L, 1L, images);
     }
+
+    public static PostCreateRequest postCreateRequest(String title, String content, Long price, Long memberId, Long category, List<MultipartFile> images) {
+        return new PostCreateRequest(title, content, price, memberId, category, images);
+    }
 }
